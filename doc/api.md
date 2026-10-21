@@ -661,7 +661,7 @@ The API will always answer as such:
 
  Returns for a `corpus` all existing WebEntities or only the WebEntities whose id is among `list_ids`.
  Results will be paginated with a total number of returned results of `count` and `page` the number of the desired page of results. Returns all results at once if `list_ids` is provided or `count` is -1 ; otherwise results will include metadata on the request including the total number of results and a `token` to be reused to collect the other pages via `get_webentities_page`.
- Other possible options include\:
+ Other possible options include:
   * order the results with `sort` by inputting a field or list of fields as named in the WebEntities returned objects; optionally prefix a sort field with a "-" to revert the sorting on it; for instance: `["-indegree", "name"]` will order by maximum indegree first then by alphabetic order of names;
   * set `light` or `semilight` or `light_for_csv` to "true" to collect lighter data with less WebEntities fields.
 
@@ -904,7 +904,7 @@ The API will always answer as such:
   + _`body_as_plain_text`_ (optional, default: `false`)
   + _`corpus`_ (optional, default: `"--hyphe--"`)
 
- Returns for a `corpus` `count` indexed Pages alphabetically ordered fitting within the WebEntity defined by `webentity_id` and returns a `pagination_token` to reuse to collect the following pages. Optionally limits the results to Pages which were actually crawled setting `onlyCrawled` to "true". Also optionally returns complete page metadata (http status, body size, content_type, encoding, crawl timestamp\ and crawl depth) when `include_page_metas` is set to "true". Additionally returns the page's zipped body encoded in base64 when `include_page_body` is "true" (only possible when Hyphe is configured with `store_crawled_html_content` to "true"); setting body_as_plain_text to "true" decodes and unzip these to return them as plain text.
+ Returns for a `corpus` `count` indexed Pages alphabetically ordered fitting within the WebEntity defined by `webentity_id` and returns a `pagination_token` to reuse to collect the following pages. Optionally limits the results to Pages which were actually crawled setting `onlyCrawled` to "true". Also optionally returns complete page metadata (http status, body size, content_type, encoding, crawl timestamp,and crawl depth) when `include_page_metas` is set to "true". Additionally returns the page's zipped body encoded in base64 when `include_page_body` is "true" (only possible when Hyphe is configured with `store_crawled_html_content` to "true"); setting body_as_plain_text to "true" decodes and unzip these to return them as plain text.
 
 
 - __`get_webentity_mostlinked_pages`:__
