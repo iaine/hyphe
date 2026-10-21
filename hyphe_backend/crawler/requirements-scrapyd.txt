@@ -1,8 +1,11 @@
-Automat==20.2.0
+#Automat==20.2.0
+Automat==24.8.0
 service_identity==18.1.0
 urllib3>=1.26.9,<2
-incremental==21.3.0
-Twisted==20.3.0
+#incremental==21.3.0
+incremental==24.7.0
+#Twisted==20.3.0
+Twisted==21.7.0
 Scrapy==1.8.0
 scrapyd==1.2.1
 scrapyd-client==1.2.0a1
