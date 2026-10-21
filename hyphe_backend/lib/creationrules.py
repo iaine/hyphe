@@ -3,12 +3,12 @@
 import re
 from hyphe_backend.lib.urllru import split_lru_in_stems
 
-SCHEME = "s:[a-zA-Z]+\\|"
-PORT = "t:[0-9]+\\|"
-HOST = "h:[^\\|]+\\|"
-SPE_HOST = r"h:(?:localhost|(?:\\d{1,3}\\.){3}\\d{1,3}|\[[\da-f]*:[\da-f:]*\])\\|"
-PATH = "p:[^\\|]+\\|"
-ANY = "[thpqf]:[^\\|]+\\|"
+SCHEME = "s:[a-zA-Z]+|"
+PORT = "t:[0-9]+|"
+HOST = "h:[^|]+|"
+SPE_HOST = r"h:(?:localhost|(?:d{1,3}.){3}d{1,3}|\[[\da-f]*:[\da-f:]*\])|"
+PATH = "p:[^|]+|"
+ANY = "[thpqf]:[^|]+|"
 
 DEFAULT = lambda x: "%s(?:%s)?(?:%s(?:%s)%s|%s)" % (SCHEME, PORT, HOST, HOST, x, SPE_HOST) # 1st host is TLD
 

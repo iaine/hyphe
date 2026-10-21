@@ -108,7 +108,7 @@ try:
     output = json.loads(output)
     if output['status'] != "ok":
         print("There was a problem sending the scrapy egg.")
-        print(output["message"].replace("\\n", "\n"))
+        print(output["message"].replace("n", "\n"))
         print(errors)
         exit()
 except ValueError:
