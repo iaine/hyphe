@@ -116,9 +116,9 @@ class TraphProtocol(LineOnlyReceiver):
 
 class TraphServerFactory(Factory):
 
-    default_WECR = b'(s:[a-zA-Z]+\\|(t:[0-9]+\\|)?(h:[^\\|]+\\|(h:[^\\|]+\\|)|h:(localhost|(\\d{1,3}\\.){3}\\d{1,3}|\\[[\\da-f]*:[\\da-f:]*\\])\\|))'
+    default_WECR = b'(s:[a-zA-Z]+|(t:[0-9]+|)?(h:[^|]+|(h:[^|]+|)|h:(localhost|(d{1,3}.){3}d{1,3}|[[da-f]*:[da-f:]*])|))'
     WECRs = {
-      's:http|h:com|h:world|': b'(s:[a-zA-Z]+\\|(t:[0-9]+\\|)?(h:[^\\|]+\\|(h:[^\\|]+\\|)+|h:(localhost|(\\d{1,3}\\.){3}\\d{1,3}|\\[[\\da-f]*:[\\da-f:]*\\])\\|)(p:[^\\|]+\\|){1})'
+      's:http|h:com|h:world|': b'(s:[a-zA-Z]+|(t:[0-9]+|)?(h:[^|]+|(h:[^|]+|)+|h:(localhost|(d{1,3}.){3}d{1,3}|[[da-f]*:[da-f:]*])|)(p:[^|]+|){1})'
     }
 
     def __init__(self, corpus, traph_dir="traph-data", default_WECR=None, WECRs=None):
