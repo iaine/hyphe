@@ -8,6 +8,7 @@ import os
 import sys
 import random
 import requests
+import json
 
 #SOURCE_URL = "https://www.useragents.me/api"
 SOURCE_URL = "https://raw.githubusercontent.com/CallocGD/user-agents-list/refs/heads/main/user-agents/user-agents.json"
@@ -38,35 +39,29 @@ class UserAgentsList(object):
 
     def download_latest(self, proxies={}):
         try:
-            json_list = requests.get(SOURCE_URL, proxies=proxies, timeout=(5, 15)).json()
+            json_list = requests.get("https://www.useragents.me/api").json()
             self.list = [
-                ua
-                for ua in json_list.get("desktop")
-                if not "Trident" in ua or "MSIE " in ua
+                ua["ua"]
+                for ua in json_list.get("data")
+                if not "Trident" in ua["ua"] or "MSIE " in ua["ua"]
             ]
-        except requests.exceptions.ConnectTimeout as e:
-            if proxies:
-                print "WARNING: could not connect to proxy %s to download latest UserAgents list; will retry without proxy" % (proxies["http"])
-                self.download_latest()
-            else:
-                print "WARNING: could not download latest UserAgents list from %s ; will use a local cached list: %s - %s" % (SOURCE_URL, type(e), e)
         except Exception as e:
-            print "WARNING: could not download latest UserAgents list from %s ; will use a local cached list: %s - %s" % (SOURCE_URL, type(e), e)
+            print ("WARNING: could not download latest UserAgents list from https://www.useragents.me ; will use a local cached list: %s - %s" % (type(e), e))
 
     def read_cache(self):
         try:
             with open(self.cache) as f:
                 self.list = f.read().splitlines()
         except Exception as e:
-            print "ERROR: could not read cached list of user agents in file %s: %s - %s" % (self.cache, type(e), e)
+            print("ERROR: could not read cached list of user agents in file %s: %s - %s" % (self.cache, type(e), e))
 
     def write_cache(self):
         try:
             with open(self.cache, "w") as user_agents_file:
                 for user_agent in self.list:
-                    print >> user_agents_file, user_agent
+                    print(user_agent, file=user_agents_file)
         except Exception as e:
-            print "ERROR: could not write list of user agents in cache file %s: %s - %s" % (self.cache, type(e), e)
+            print("ERROR: could not write list of user agents in cache file %s: %s - %s" % (self.cache, type(e), e))
 
     def get_random(self):
         """Returns a random user agent not including IE or Trident ones"""

@@ -172,6 +172,34 @@ class TraphCorpus(object):
         return True
 
     def call(self, method, *args, **kwargs):
+
+        # TODO PY3
+        # handle cases of traph input/ouputs that need to be converted to bytes
+        # Or actually, probably do that instead in the server.py to let each process handle it separately (returnResult + lineReceived)
+        #
+
+        # add_page
+        # add_prefix_to_webentity
+        # add_webentity_creation_rule
+        # clear
+        # create_webentity
+        # delete_webentity
+        # get_potential_prefix
+        # get_webentities_inlinks
+        # get_webentity_by_prefix
+        # get_webentity_child_webentities
+        # get_webentity_"+("crawled_" if onlyCrawled else "")+"pages
+        # get_webentity_most_linked_pages
+        # get_webentity_pagelinks
+        # get_webentity_parent_webentities
+        # index_batch_crawl
+        # paginate_webentity_pagelinks
+        # paginate_webentity_pages
+        # remove_prefix_from_webentity
+        # remove_webentity_creation_rule
+        # retrieve_webentity
+
+
         return self.client.sendMessage(method, *args, **kwargs)
 
     @inlineCallbacks
@@ -260,7 +288,7 @@ class TraphProcessProtocol(ProcessProtocol):
 
     def childDataReceived(self, childFD, data):
         data = data.strip()
-        if childFD == 1 and data == "READY":
+        if childFD == 1 and data == b"READY":
             try:
                 self.connectClient()
             except ConnectError as e:
@@ -268,7 +296,7 @@ class TraphProcessProtocol(ProcessProtocol):
                 self.stop()
                 self.corpus.checkAndRemovePID()
         else:
-            self.corpus.log('Traph process received "%s"' % data, childFD == 2 and "RuntimeWarning" not in data and "DeprecationWarning" not in data)
+            self.corpus.log(b'Traph process received "%s"' % data, childFD == 2 and b"RuntimeWarning" not in data and b"DeprecationWarning" not in data)
 
     def childConnectionLost(self, childFD):
         pass
@@ -375,7 +403,9 @@ class TraphClientProtocol(LineOnlyReceiver):
     def lineReceived(self, data):
         self.corpus.lastcall = time()
         try:
-            msg = msgpack.unpackb(data)
+            msg = msgpack.unpackb(data, strict_map_key=False)
+            if config["DEBUG"]:
+                msg = msgpack.unpackb(data)
             if self.debug:
                 exec_time = time() - self.start_query
                 if exec_time > 1:
@@ -408,7 +438,7 @@ if __name__ == "__main__":
     #reactor.callLater(1, factory.corpora[corpus].call, "TEST")
     #reactor.callLater(2, factory.corpora[corpus].call, "clear")
     reactor.callLater(1, factory.corpora[corpus].call, "count_links")
-    #reactor.callLater(3, factory.corpora[corpus].call, "add_page", "s:http|h:fr|h:scpo|p:bib|")
+    reactor.callLater(3, factory.corpora[corpus].call, "add_page", "s:http|h:fr|h:scpo|p:bib|p:éléphant|")
     reactor.callLater(1, factory.corpora[corpus].call, "get_webentities_inlinks_iter", include_auto=False)
     reactor.callLater(2, factory.corpora[corpus].call, "metrics")
     reactor.callLater(2, factory.corpora[corpus].call, "get_webentity_most_linked_pages", 1, [], 5)

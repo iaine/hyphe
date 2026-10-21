@@ -68,6 +68,7 @@ The API will always answer as such:
     * __`cancel`__
     * __`get_job_logs`__
     * __`get_job_log`__
+    * __`get_job_log`__
     * __`set_job_review_status`__
 - [Commands for namespace: "store."](#commands-for-namespace-store)
   + [DEFINE WEBENTITIES](#define-webentities)
@@ -431,22 +432,7 @@ The API will always answer as such:
   + _`job_id`_ (mandatory)
   + _`corpus`_ (optional, default: `"--hyphe--"`)
 
- Returns for a `corpus` historic activity logs of a specific crawl with id `job_id`.
-
-
-- __`get_job_log`:__
-  + _`job_id`_ (mandatory)
-  + _`corpus`_ (optional, default: `"--hyphe--"`)
-
- Returns for a `corpus` the detailed crawler's logs of a specific crawl with id `job_id`.
-
-
-- __`set_job_review_status`:__
-  + _`job_id`_ (mandatory)
-  + _`status`_ (mandatory)
-  + _`corpus`_ (optional, default: `"--hyphe--"`)
-
- Sets for a `corpus` the reviewing `status` of a specific crawl with id `job_id` as true or false.
+ Returns for a `corpus` activity logs of a specific crawl with id `job_id`.
 
 
 

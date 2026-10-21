@@ -7,7 +7,7 @@ __Notes:__
 
 The following installation instructions have been tested under Ubuntu 16.04.3 LTS. It should be possible to adapt these commands to older or more recent Ubuntu versions and diverse Debian and CentOS distributions (using `yum` instead of `apt` where necessary and so on).
 
-[MongoDB Community Edition (v3.6, the last free software version)](http://www.mongodb.org/) (a NoSQL database server), [ScrapyD](http://scrapyd.readthedocs.org/en/latest/) (a crawler framework server) and Python 2.7 are required for the backend to work.
+[MongoDB Community Edition (v3)](http://www.mongodb.org/) (a NoSQL database server), [ScrapyD](http://scrapyd.readthedocs.org/en/latest/) (a crawler framework server) and Python 2.7 are required for the backend to work.
 
 
 ## 0) Get global requirements
@@ -22,29 +22,16 @@ sudo apt-get install git curl apache2 build-essential gcc musl-dev python2.7-dev
 Or, with yum under CentOS/RedHat like distributions, the packages names can be slightly different and some extra commands might be required:
 ```bash
 sudo yum check-update
-sudo yum install git patch curl httpd gcc python-devel python-setuptools python2-pip libxml2-devel libxslt-devel openssl openssl-devel libffi-devel zlib-devel bzip2-devel readline-devel sqlite-devel
+sudo yum install git curl httpd gcc python2.7-devel python-setuptools python-pip libxml2-devel libxslt-devel openssl-devel libffi-devel
 # Fix possibly misnamed pip
 pip > /dev/null || alias pip="python-pip"
 # Activate Apache's autorestart on reboot
-sudo systemctl enable httpd
-sudo systemctl start httpd
+sudo chkconfig --levels 235 httpd on
+sudo service httpd restart
 ```
 
-Then prepare to use multiple python environments with the help of [`pyenv`](https://github.com/pyenv/pyenv) which can be easily installed using [`pyenv-installer`](https://github.com/pyenv/pyenv-installer):
-
-```bash
-curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash
-```
-
-And set it up by adding the proper environment variables within your `.bashrc` and/or `.bash_profile` or equivalent as the installer should tell you to do, or by following [these instructions](https://github.com/pyenv/pyenv#b-set-up-your-shell-environment-for-pyenv), then close and reopen your terminal.
-
-pyenv is a convenient tool to handle multiple python versions and environments for a single user on a machine without requiring any system install with root rights.
-
-So let's first prepare it by installing the latest python 2.7 version for our user:
-
-```bash
-pyenv install 2.7.18
-```
+Hyphe still relies on python2 for now which might disappear from official distributions repositories in the future. If you need to install it manually (for instance via pyenv), make sure to install the following system dependencies first (change -devel into -dev for all under apt based architectures such as Ubuntu or Debian):
+`zlib-devel bzip2-devel openssl openssl-devel sqlite-devel readline-devel`
 
 
 ## 1) Clone the source code
@@ -57,19 +44,9 @@ cd hyphe
 
 ## 2) Install [MongoDB v3.6](http://www.mongodb.org/)
 
-Hyphe relies on the latest open source version of MongoDB community edition, which is now easiest to install using Docker:
+As they are usually very old, we recommend not to use the MongoDB packages shipped within distributions official repositories.
 
-```bash
-docker pull mongo:3.6
-```
-
-Then when developing, you'll need to run your MongoDB Docker image in a dedicated terminal with the following command:
-
-```bash
-docker run --rm -p 27017:27017 -v mongo-data:/data/db --name mongo-hyphe mongo:3.6 mongod --smallfiles --bind_ip 0.0.0.0 --setParameter failIndexKeyTooLong=false
-```
-
-You can also try to install it manually using the [latest Linux build](https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-3.6.23.tgz) (or its [archived version](https://web.archive.org/web/20250519164450/https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-3.6.23.tgz)) or find old packages for your distribution.
+Rather follow official installation instructions: [https://docs.mongodb.com/v3.6/](https://docs.mongodb.com/v3.6/). Search the link for "MongoDB Community Edition" for your distribution, look for the documentation for version 3, and follow the instructions.
 
 For instance for Ubuntu:
 
@@ -111,17 +88,18 @@ For development and administrative use, you can also optionally install the foll
 Hyphe uses an old version of ScrapyD which is not packaged so we will install it locally in a dedicated pyenv environment and dedicated directory.
 
 ```bash
-mkdir -p scrapyd
-cd scrapyd
-mkdir -p eggs dbs log
-pyenv virtualenv 2.7.18 scrapyd
-pyenv local scrapyd
-pyenv activate scrapyd
+sudo pip install Scrapy==1.6.0
+sudo pip install scrapyd==1.2.0
 ```
 
-Thanks to the `pyenv local` command, there should now reside in the scrapyd directory a `.python-version` file which will let pyenv know whenever you enter this directory within a terminal to use the dedicated python environment.
+- Install Hyphe's config for ScrapyD:
 
-Let's then install ScrapyD's dependencies and configuration for Hyphe's crawler within the environment:
+```bash
+sudo mkdir -p /etc/scrapyd
+sudo ln -s `pwd`/hyphe_backend/crawler/scrapyd.config /etc/scrapyd/scrapyd.conf
+```
+
+- Create a `scrapy` user to run the service:
 
 ```bash
 cat ../hyphe_backend/crawler/requirements-scrapyd.txt | sudo xargs -n 1 -L 1 pip install
@@ -157,7 +135,7 @@ pyenv activate hyphe
 
 # Install Hyphe's dependencies
 cat requirements.txt | xargs -n 1 -L 1 pip install
-pwd > ~/.pyenv/versions/hyphe/lib/python2.7/site-packages/hyphe.pth
+deactivate
 ```
 
 

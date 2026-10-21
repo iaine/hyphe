@@ -24,7 +24,7 @@ if not config:
     exit()
 
 if len(sys.argv) == 1:
-    print helpdoc
+    print (helpdoc)
     exit()
 
 auto_convert_integers = True
@@ -44,15 +44,15 @@ else:
 
 def printValue(value):
     if inline == "json":
-        print json.dumps(value)
+        print (json.dumps(value))
     elif inline:
-        print repr(value).decode("unicode-escape").encode('utf-8')
+        print (repr(value).decode("unicode-escape").encode('utf-8'))
     else:
         import pprint
         pprint.pprint(value)
 
 def printError(error):
-    print ' !! ERROR: ', error
+    print (' !! ERROR: ', error)
 
 def shutdown(data):
     reactor.stop()
@@ -85,7 +85,7 @@ for a in sys.argv[startargs:]:
 
 re_clean_args = re.compile(r"^\[(.*)\]$")
 if not inline:
-    print "CALL:", command, re_clean_args.sub(r"\1", str(args))
+    print ("CALL:", command, re_clean_args.sub(r"\1", str(args)))
 d = proxy.callRemote(command, *args)
 
 d.addCallback(printValue).addErrback(printError)
